@@ -1,0 +1,38 @@
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+
+class Thought extends Model {}
+
+Thought.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    thoughtText: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      len: [1, 280],
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    //   Use a getter method to format the timestamp on query
+    },
+    replies: {
+    //  Array of nested docs created with the reactionSchema
+    },
+  },
+  {
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: 'thought',
+  }
+);
+
+module.exports = Thought;
