@@ -1,38 +1,40 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
-
-class Thought extends Model {}
-
-Thought.init(
+const { Schema, model } = require('mongoose');
+const reactionSchema = require('./Reaction');
+// Need to import Dateformat function
+const thoughtSchema = new Schema (
   {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     thoughtText: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      len: [1, 280],
+      type: String,
+      required: true,
+      minlength: 1,
+      maxlength: 280,
     },
     createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    //   Use a getter method to format the timestamp on query
+      type: Date,
+      default: Date.now,
+    //   Write function later
+      get: timeStamp => dateFormat (timeStamp),
     },
-    replies: {
-    //  Array of nested docs created with the reactionSchema
+    username: {
+        type: String,
+        required: true,
     },
+    reactions: [
+        reactionSchema,
+    ]
   },
-  {
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'thought',
-  }
+{
+    toJSON: {
+        getters: true,
+    },
+    id: false,
+}
 );
+
+thoughtSchema.virtual("reactionCount").get(function(){
+    return this.reactions.length;
+})
+
+const Thought  = model("Thought", thoughtSchema);
 
 module.exports = Thought;
