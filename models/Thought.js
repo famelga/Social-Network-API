@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
-// Need to import Dateformat function
+const dateFormat = require('../utils/dateFormat');
+
 const thoughtSchema = new Schema (
   {
     thoughtText: {
@@ -12,7 +13,7 @@ const thoughtSchema = new Schema (
     createdAt: {
       type: Date,
       default: Date.now,
-    //   Write function later
+
       get: timeStamp => dateFormat (timeStamp),
     },
     username: {
